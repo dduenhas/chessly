@@ -54,7 +54,7 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
     const config: any = {
       fen: chess.fen(),
       orientation,
-      viewOnly: viewOnly ?? !onMove,
+      viewOnly: viewOnly ?? false,
       coordinates: true,
       resizable: true,
       drawable: { enabled: false },

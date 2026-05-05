@@ -98,7 +98,7 @@ function Licao() {
             {section.content && <p className="text-gray-700 mb-6">{section.content}</p>}
             {section.fen && (
               <div className="bg-gray-100 rounded-lg p-4">
-                <ChessBoard fen={section.fen} orientation={section.orientation || 'white'} viewOnly />
+                <ChessBoard fen={section.fen} orientation={section.orientation || 'white'} />
               </div>
             )}
           </div>
