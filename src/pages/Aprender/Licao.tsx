@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import ptBR from '../../i18n/pt-BR'
 import ChessBoard from '../../components/ChessBoard'
@@ -16,6 +16,15 @@ function Licao() {
   const [quizAnswered, setQuizAnswered] = useState(false)
   const [quizCorrect, setQuizCorrect] = useState(false)
   const [quizSelected, setQuizSelected] = useState<number | null>(null)
+  const [showVideo, setShowVideo] = useState(false)
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setShowVideo(false)
+    }
+    window.addEventListener('keydown', handleEsc)
+    return () => window.removeEventListener('keydown', handleEsc)
+  }, [])
 
   const handleQuizAnswer = useCallback(
     (index: number) => {
@@ -89,6 +98,17 @@ function Licao() {
           <div>
             {section.title && <h2 className="text-xl font-bold text-gray-900 mb-4">{section.title}</h2>}
             <div className="prose text-gray-700 leading-relaxed whitespace-pre-line">{section.content}</div>
+            {section.video && (
+              <div className="mt-4">
+                <button
+                  onClick={() => setShowVideo(true)}
+                  className="inline-flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors"
+                >
+                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                  Ver vídeo explicativo
+                </button>
+              </div>
+            )}
           </div>
         )}
 
@@ -146,6 +166,29 @@ function Licao() {
           </div>
         )}
       </div>
+
+      {showVideo && section.video && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4" onClick={() => setShowVideo(false)}>
+          <div className="relative w-full max-w-3xl bg-gray-900 rounded-xl overflow-hidden shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowVideo(false)}
+              className="absolute top-3 right-3 z-10 bg-black bg-opacity-60 hover:bg-opacity-80 text-white rounded-full w-8 h-8 flex items-center justify-center text-xl transition-colors"
+              aria-label="Fechar"
+            >
+              ✕
+            </button>
+            <div className="relative pt-[56.25%]">
+              <iframe
+                className="absolute inset-0 w-full h-full"
+                src={section.video}
+                title="Vídeo explicativo"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="flex justify-between">
         <button onClick={handlePrev} disabled={sectionIndex === 0} className={`btn-secondary ${sectionIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}>

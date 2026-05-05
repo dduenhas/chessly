@@ -10,6 +10,7 @@ export interface LicaoSection {
   title?: string
   content?: string
   fen?: string
+  video?: string
   orientation?: 'white' | 'black'
   question?: string
   options?: string[]
@@ -152,6 +153,7 @@ export const licoes: Licao[] = [
         type: 'text',
         title: 'Captura En Passant',
         content: '"En Passant" (do francês "de passagem") é uma captura especial de Peão. Se um Peão avança duas casas a partir da posição inicial e para do lado de um Peão adversário, este pode capturá-lo como se ele tivesse andado apenas uma casa. Só pode ser feito no lance seguinte!',
+        video: 'https://www.youtube.com/embed/iPdlFXZdRPg',
       },
       {
         type: 'text',
