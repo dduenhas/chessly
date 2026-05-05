@@ -248,6 +248,7 @@ export const licoes: Licao[] = [
         title: 'Mate do Corredor',
         content: 'Com duas Torres ou Dama e Torre, você pode dar mate "empurrando" o Rei inimigo para a borda do tabuleiro. As peças pesadas controlam fileiras inteiras.',
         fen: '1k6/1R6/8/8/8/8/8/R3K3 w - - 0 1',
+        video: 'https://www.youtube.com/embed/t9XhfpFMZ5o',
       },
       {
         type: 'quiz',
