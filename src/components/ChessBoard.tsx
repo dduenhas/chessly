@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useCallback } from 'react'
 import { Chessground } from 'chessground'
 import { Chess } from 'chess.js'
 import 'chessground/assets/chessground.base.css'
@@ -37,65 +37,73 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
   const boardRef = useRef<HTMLDivElement>(null)
   const chessRef = useRef<Chess>(new Chess())
   const cgRef = useRef<ReturnType<typeof Chessground> | null>(null)
+  const onMoveRef = useRef(onMove)
+  onMoveRef.current = onMove
+
+  const syncBoard = useCallback(
+    (opts?: { fen?: string }) => {
+      const cg = cgRef.current
+      const chess = chessRef.current
+      if (!cg) return
+
+      if (opts?.fen) {
+        try {
+          chess.load(opts.fen)
+        } catch {}
+      }
+
+      const dests = movable ? movable.dests : (!viewOnly ? toDests(chess) : new Map())
+      const turnColor = movable ? movable.color : toColor(chess)
+
+      cg.set({
+        fen: chess.fen(),
+        movable: viewOnly
+          ? { free: false, dests: new Map(), color: turnColor }
+          : {
+              free: false,
+              dests,
+              color: turnColor,
+              events: {
+                after: (from: string, to: string) => {
+                  const currentChess = chessRef.current
+                  try {
+                    const moveResult = currentChess.move({ from, to, promotion: 'q' })
+                    if (moveResult) {
+                      syncBoard()
+                    }
+                  } catch {}
+                  onMoveRef.current?.(from, to)
+                },
+              },
+            },
+      } as any)
+    },
+    [movable, viewOnly]
+  )
 
   useEffect(() => {
     if (!boardRef.current) return
-
-    const chess = chessRef.current
-    if (fen) {
-      try {
-        chess.load(fen)
-      } catch {}
-    }
-
-    const dests = movable ? movable.dests : (!viewOnly ? toDests(chess) : new Map())
-    const turnColor = movable ? movable.color : toColor(chess)
-
-    const config: any = {
-      fen: chess.fen(),
-      orientation,
-      viewOnly: viewOnly ?? false,
-      coordinates: true,
-      resizable: true,
-      drawable: { enabled: false },
-      movable: {
-        free: false,
-        dests,
-        color: turnColor,
-        events: {
-          after: (from: string, to: string) => {
-            onMove?.(from, to)
-          },
-        },
-      },
-    }
 
     if (cgRef.current) {
       cgRef.current.destroy()
     }
 
-    cgRef.current = Chessground(boardRef.current, config)
-
-    return () => {
-      cgRef.current?.destroy()
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!cgRef.current) return
-    const chess = chessRef.current
-
     if (fen) {
       try {
-        chess.load(fen)
+        chessRef.current.load(fen)
       } catch {}
     }
 
+    const chess = chessRef.current
     const dests = movable ? movable.dests : (!viewOnly ? toDests(chess) : new Map())
     const turnColor = movable ? movable.color : toColor(chess)
 
-    cgRef.current.set({
+    cgRef.current = Chessground(boardRef.current, {
       fen: chess.fen(),
+      orientation,
+      viewOnly: viewOnly ?? false,
+      coordinates: true,
+      drawable: { enabled: false },
       movable: viewOnly
         ? { free: false, dests: new Map(), color: turnColor }
         : {
@@ -104,12 +112,38 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
             color: turnColor,
             events: {
               after: (from: string, to: string) => {
-                onMove?.(from, to)
+                const currentChess = chessRef.current
+                try {
+                  const moveResult = currentChess.move({ from, to, promotion: 'q' })
+                  if (moveResult) {
+                    syncBoard()
+                  }
+                } catch {}
+                onMoveRef.current?.(from, to)
               },
             },
           },
-    } as any)
-  }, [fen, viewOnly])
+    })
+
+    return () => {
+      cgRef.current?.destroy()
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!cgRef.current) return
+    if (fen) {
+      try {
+        chessRef.current.load(fen)
+      } catch {}
+    }
+    syncBoard({ fen })
+  }, [fen])
+
+  useEffect(() => {
+    if (!cgRef.current) return
+    syncBoard()
+  }, [viewOnly])
 
   return (
     <div
