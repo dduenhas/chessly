@@ -232,9 +232,10 @@ export const licoes: Licao[] = [
       },
       {
         type: 'text',
-        title: 'Mate do Beijo da Morte',
+        title: 'Mate do Beijo da Morte (Beijo Fatal)',
         content: 'O mate mais simples: a Dama fica ao lado do Rei inimigo, protegida por uma peça sua. O Rei adversário não pode capturar a Dama porque ela está protegida, e não pode fugir.',
         fen: '7k/8/8/8/8/8/8/6QK w - - 0 1',
+        video: 'https://www.youtube.com/embed/BvH7DOxslnY',
       },
       {
         type: 'board',
