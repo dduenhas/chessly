@@ -40,45 +40,57 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
   const onMoveRef = useRef(onMove)
   onMoveRef.current = onMove
 
+  const isExternalControl = !!movable
+
   const syncBoard = useCallback(
-    (opts?: { fen?: string }) => {
+    () => {
       const cg = cgRef.current
-      const chess = chessRef.current
       if (!cg) return
 
-      if (opts?.fen) {
-        try {
-          chess.load(opts.fen)
-        } catch {}
-      }
-
-      const dests = movable ? movable.dests : (!viewOnly ? toDests(chess) : new Map())
-      const turnColor = movable ? movable.color : toColor(chess)
-
-      cg.set({
-        fen: chess.fen(),
-        movable: viewOnly
-          ? { free: false, dests: new Map(), color: turnColor }
-          : {
-              free: false,
-              dests,
-              color: turnColor,
-              events: {
-                after: (from: string, to: string) => {
-                  const currentChess = chessRef.current
-                  try {
-                    const moveResult = currentChess.move({ from, to, promotion: 'q' })
-                    if (moveResult) {
-                      syncBoard()
-                    }
-                  } catch {}
-                  onMoveRef.current?.(from, to)
+      if (isExternalControl) {
+        cg.set({
+          fen: chessRef.current.fen(),
+          movable: viewOnly
+            ? { free: false, dests: new Map(), color: movable!.color }
+            : {
+                free: false,
+                dests: movable!.dests,
+                color: movable!.color,
+                events: {
+                  after: (_from: string, _to: string) => {
+                    onMoveRef.current?.(_from, _to)
+                  },
                 },
               },
-            },
-      } as any)
+        } as any)
+      } else {
+        const chess = chessRef.current
+        const dests = viewOnly ? new Map() : toDests(chess)
+        const turnColor = toColor(chess)
+
+        cg.set({
+          fen: chess.fen(),
+          movable: viewOnly
+            ? { free: false, dests: new Map(), color: turnColor }
+            : {
+                free: false,
+                dests,
+                color: turnColor,
+                events: {
+                  after: (from: string, to: string) => {
+                    try {
+                      const moveResult = chess.move({ from, to, promotion: 'q' })
+                      if (moveResult) {
+                        syncBoard()
+                      }
+                    } catch {}
+                  },
+                },
+              },
+        } as any)
+      }
     },
-    [movable, viewOnly]
+    [isExternalControl, movable, viewOnly]
   )
 
   useEffect(() => {
@@ -95,16 +107,32 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
     }
 
     const chess = chessRef.current
-    const dests = movable ? movable.dests : (!viewOnly ? toDests(chess) : new Map())
-    const turnColor = movable ? movable.color : toColor(chess)
 
-    cgRef.current = Chessground(boardRef.current, {
+    const initialConfig: any = {
       fen: chess.fen(),
       orientation,
       viewOnly: viewOnly ?? false,
       coordinates: true,
       drawable: { enabled: false },
-      movable: viewOnly
+    }
+
+    if (isExternalControl) {
+      initialConfig.movable = viewOnly
+        ? { free: false, dests: new Map(), color: movable!.color }
+        : {
+            free: false,
+            dests: movable!.dests,
+            color: movable!.color,
+            events: {
+              after: (from: string, to: string) => {
+                onMoveRef.current?.(from, to)
+              },
+            },
+          }
+    } else {
+      const dests = viewOnly ? new Map() : toDests(chess)
+      const turnColor = toColor(chess)
+      initialConfig.movable = viewOnly
         ? { free: false, dests: new Map(), color: turnColor }
         : {
             free: false,
@@ -112,18 +140,18 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
             color: turnColor,
             events: {
               after: (from: string, to: string) => {
-                const currentChess = chessRef.current
                 try {
-                  const moveResult = currentChess.move({ from, to, promotion: 'q' })
+                  const moveResult = chess.move({ from, to, promotion: 'q' })
                   if (moveResult) {
                     syncBoard()
                   }
                 } catch {}
-                onMoveRef.current?.(from, to)
               },
             },
-          },
-    })
+          }
+    }
+
+    cgRef.current = Chessground(boardRef.current, initialConfig)
 
     return () => {
       cgRef.current?.destroy()
@@ -137,7 +165,7 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
         chessRef.current.load(fen)
       } catch {}
     }
-    syncBoard({ fen })
+    syncBoard()
   }, [fen])
 
   useEffect(() => {
