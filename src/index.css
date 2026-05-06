@@ -10,13 +10,20 @@
 
 @layer components {
   .btn-primary {
-    @apply bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg;
+    @apply bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(34, 197, 94, 0.35);
   }
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-colors duration-200;
+    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-3 px-6 rounded-lg transition-all duration-200;
+  }
+  .btn-secondary:hover {
+    transform: translateY(-1px);
   }
   .card {
-    @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200 p-6;
+    @apply bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-200 p-6;
   }
 }
 
@@ -25,4 +32,321 @@
 }
 .chess-piece-drag:active {
   cursor: grabbing;
+}
+
+/* ===== Micro-Animations: Keyframes ===== */
+
+@keyframes piece-glow {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.5), 0 0 15px rgba(168, 85, 247, 0.3);
+    transform: translateY(0);
+  }
+  50% {
+    box-shadow: 0 16px 40px rgba(139, 92, 246, 0.7), 0 0 30px rgba(168, 85, 247, 0.5);
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.05); }
+}
+
+@keyframes icon-bounce {
+  0%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-10px); }
+  50% { transform: translateY(0); }
+  70% { transform: translateY(-5px); }
+  85% { transform: translateY(0); }
+}
+
+@keyframes arrow-slide {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(8px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes gradient-shift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes nav-underline {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes scale-in {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+/* ===== Micro-Animations: Classes ===== */
+
+.piece-image {
+  transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.piece-image:hover {
+  transform: scale(1.2);
+  filter: drop-shadow(0 0 12px rgba(168, 85, 247, 0.5));
+}
+
+.piece-glow-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.piece-glow-container::before {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  width: 60%;
+  height: 12px;
+  border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(139, 92, 246, 0.6) 0%, transparent 70%);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: -1;
+}
+.piece-glow-container:hover::before {
+  opacity: 1;
+  transform: scale(1);
+  animation: glow-pulse 1.5s ease-in-out infinite;
+}
+
+.board-image {
+  cursor: zoom-in;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.board-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card-icon {
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.group:hover .card-icon,
+a:hover .card-icon {
+  animation: icon-bounce 0.6s ease;
+}
+
+.nav-link-underline {
+  position: relative;
+}
+.nav-link-underline::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: #22c55e;
+  border-radius: 1px;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+.nav-link-underline:hover::after {
+  transform: scaleX(1);
+}
+
+.btn-hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.btn-hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.35);
+}
+
+.shimmer-bar {
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* ===== Accessibility: Font Size Scaling ===== */
+:root {
+  --a11y-font-scale: 1;
+}
+
+body {
+  font-size: calc(1rem * var(--a11y-font-scale));
+}
+
+/* remove image-size rules — chessboard scales responsively, emoji inherit font-size */
+
+/* ===== Accessibility: Reduced Motion ===== */
+.a11y-reduce-motion *,
+.a11y-reduce-motion *::before,
+.a11y-reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ===== Accessibility: High Contrast ===== */
+.a11y-high-contrast {
+  --hc-bg: #000;
+  --hc-text: #fff;
+  --hc-yellow: #ff0;
+  --hc-cyan: #0ff;
+  --hc-green: #0f0;
+  --hc-magenta: #f0f;
+}
+
+.a11y-high-contrast body {
+  background-color: var(--hc-bg) !important;
+  color: var(--hc-text) !important;
+}
+
+.a11y-high-contrast .bg-gray-50 {
+  background-color: var(--hc-bg) !important;
+}
+
+.a11y-high-contrast .bg-white,
+.a11y-high-contrast .card,
+.a11y-high-contrast .bg-gray-100,
+.a11y-high-contrast .bg-gray-50 {
+  background-color: #111 !important;
+  color: var(--hc-text) !important;
+  border: 2px solid var(--hc-yellow) !important;
+}
+
+.a11y-high-contrast .text-gray-900,
+.a11y-high-contrast .text-gray-800,
+.a11y-high-contrast .text-gray-700 {
+  color: var(--hc-text) !important;
+}
+
+.a11y-high-contrast .text-gray-600,
+.a11y-high-contrast .text-gray-500,
+.a11y-high-contrast .text-gray-400 {
+  color: var(--hc-cyan) !important;
+}
+
+.a11y-high-contrast a,
+.a11y-high-contrast .text-blue-600,
+.a11y-high-contrast .text-green-600,
+.a11y-high-contrast .text-purple-600 {
+  color: var(--hc-yellow) !important;
+}
+
+.a11y-high-contrast button,
+.a11y-high-contrast .btn-primary,
+.a11y-high-contrast .btn-secondary {
+  background-color: var(--hc-bg) !important;
+  color: var(--hc-yellow) !important;
+  border: 2px solid var(--hc-yellow) !important;
+}
+
+.a11y-high-contrast .bg-green-600,
+.a11y-high-contrast .bg-green-500 {
+  background-color: var(--hc-bg) !important;
+  border: 2px solid var(--hc-green) !important;
+  color: var(--hc-green) !important;
+}
+
+.a11y-high-contrast .bg-gray-900 {
+  background-color: var(--hc-bg) !important;
+  border: 2px solid var(--hc-yellow) !important;
+}
+
+.a11y-high-contrast .bg-gray-200,
+.a11y-high-contrast .bg-gray-300 {
+  background-color: #222 !important;
+  border: 1px solid var(--hc-yellow) !important;
+}
+
+.a11y-high-contrast .border-gray-200 {
+  border-color: var(--hc-yellow) !important;
+}
+
+.a11y-high-contrast .bg-red-50,
+.a11y-high-contrast .bg-green-50,
+.a11y-high-contrast .bg-blue-50 {
+  background-color: #111 !important;
+  border: 2px solid var(--hc-cyan) !important;
+}
+
+.a11y-high-contrast .bg-red-100,
+.a11y-high-contrast .bg-green-100,
+.a11y-high-contrast .bg-blue-100 {
+  background-color: #222 !important;
+}
+
+.a11y-high-contrast .hover\:bg-gray-800:hover,
+.a11y-high-contrast .hover\:bg-gray-300:hover,
+.a11y-high-contrast .hover\:bg-green-700:hover {
+  background-color: var(--hc-yellow) !important;
+  color: var(--hc-bg) !important;
+}
+
+/* ===== Responsive header nav for small screens ===== */
+@media (max-width: 640px) {
+  header .flex.items-center.justify-between {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  nav.flex.items-center.gap-1 {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  nav.flex.items-center.gap-1 a {
+    font-size: 0.75rem;
+    padding: 0.375rem 0.625rem;
+  }
+  nav.flex.items-center.gap-1 a span.mr-1 {
+    display: none;
+  }
+}
+
+/* ===== Responsive grid for home feature cards ===== */
+@media (max-width: 640px) {
+  .grid.md\:grid-cols-3 {
+    grid-template-columns: 1fr !important;
+  }
+  .grid.md\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  .flex.flex-col.md\:flex-row {
+    flex-direction: column !important;
+  }
+}
+
+/* ===== Ensure chessboard fits small screens ===== */
+@media (max-width: 640px) {
+  .aspect-square.max-w-\[500px\] {
+    max-width: 95vw !important;
+  }
+  .max-w-4xl,
+  .max-w-3xl,
+  .max-w-6xl {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+  }
+  h1 {
+    font-size: 1.5rem !important;
+  }
+  h2 {
+    font-size: 1.25rem !important;
+  }
 }

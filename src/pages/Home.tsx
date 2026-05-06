@@ -43,30 +43,30 @@ function Home() {
       )}
 
       <div className="grid md:grid-cols-3 gap-6">
-        <Link to="/aprender" className="card hover:border-blue-200 border-2 border-transparent text-left">
-          <div className="text-5xl mb-4">📖</div>
+        <Link to="/aprender" className="card hover:border-blue-200 border-2 border-transparent text-left group">
+          <div className="text-5xl mb-4 card-icon">📖</div>
           <h3 className="text-xl font-bold text-gray-900 mb-2">{ptBR.home.features.learn.title}</h3>
           <p className="text-gray-600">{ptBR.home.features.learn.description}</p>
           <div className="mt-4">
-            <span className="text-blue-600 font-semibold">{ptBR.home.startLearning} →</span>
+            <span className="text-blue-600 font-semibold inline-block group-hover:translate-x-1 transition-transform">{ptBR.home.startLearning} →</span>
           </div>
         </Link>
 
-        <Link to="/jogar" className="card hover:border-purple-200 border-2 border-transparent text-left">
-          <div className="text-5xl mb-4">🎮</div>
+        <Link to="/jogar" className="card hover:border-purple-200 border-2 border-transparent text-left group">
+          <div className="text-5xl mb-4 card-icon">🎮</div>
           <h3 className="text-xl font-bold text-gray-900 mb-2">{ptBR.home.features.play.title}</h3>
           <p className="text-gray-600">{ptBR.home.features.play.description}</p>
           <div className="mt-4">
-            <span className="text-purple-600 font-semibold">{ptBR.home.playNow} →</span>
+            <span className="text-purple-600 font-semibold inline-block group-hover:translate-x-1 transition-transform">{ptBR.home.playNow} →</span>
           </div>
         </Link>
 
-        <Link to="/exercicios" className="card hover:border-green-200 border-2 border-transparent text-left">
-          <div className="text-5xl mb-4">🎯</div>
+        <Link to="/exercicios" className="card hover:border-green-200 border-2 border-transparent text-left group">
+          <div className="text-5xl mb-4 card-icon">🎯</div>
           <h3 className="text-xl font-bold text-gray-900 mb-2">{ptBR.home.features.exercises.title}</h3>
           <p className="text-gray-600">{ptBR.home.features.exercises.description}</p>
           <div className="mt-4">
-            <span className="text-green-600 font-semibold">{ptBR.home.doExercises} →</span>
+            <span className="text-green-600 font-semibold inline-block group-hover:translate-x-1 transition-transform">{ptBR.home.doExercises} →</span>
           </div>
         </Link>
       </div>

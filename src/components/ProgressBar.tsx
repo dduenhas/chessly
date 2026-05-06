@@ -18,7 +18,7 @@ function ProgressBar({ value, max = 100, label, color = 'bg-green-600' }: Progre
       )}
       <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
         <div
-          className={`${color} h-full rounded-full transition-all duration-500 ease-out`}
+          className={`${color} h-full rounded-full transition-all duration-500 ease-out shimmer-bar`}
           style={{ width: `${pct}%` }}
         />
       </div>

@@ -20,12 +20,12 @@ function Aprender() {
             <Link
               key={licao.id}
               to={`/aprender/${licao.id}`}
-              className={`card flex items-center gap-6 border-2 border-transparent ${
+              className={`card flex items-center gap-6 border-2 border-transparent group ${
                 completed ? 'hover:border-green-200' : 'hover:border-blue-200'
               }`}
             >
               <div
-                className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold flex-shrink-0 ${
+                className={`w-12 h-12 rounded-full flex items-center justify-center text-xl font-bold flex-shrink-0 transition-transform group-hover:scale-110 ${
                   completed ? 'bg-green-100 text-green-600' : 'bg-blue-100 text-blue-600'
                 }`}
               >
@@ -42,7 +42,7 @@ function Aprender() {
                 </div>
                 <p className="text-gray-600 mt-1">{licao.description}</p>
               </div>
-              <div className="text-2xl">→</div>
+              <div className="text-2xl transition-transform group-hover:scale-125 group-hover:translate-x-1" style={{ display: 'inline-block' }}>→</div>
             </Link>
           )
         })}

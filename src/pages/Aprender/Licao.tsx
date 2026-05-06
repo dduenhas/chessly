@@ -17,10 +17,14 @@ function Licao() {
   const [quizCorrect, setQuizCorrect] = useState(false)
   const [quizSelected, setQuizSelected] = useState<number | null>(null)
   const [showVideo, setShowVideo] = useState(false)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setShowVideo(false)
+      if (e.key === 'Escape') {
+        setShowVideo(false)
+        setFullscreenImage(null)
+      }
     }
     window.addEventListener('keydown', handleEsc)
     return () => window.removeEventListener('keydown', handleEsc)
@@ -97,7 +101,31 @@ function Licao() {
         {section.type === 'text' && (
           <div>
             {section.title && <h2 className="text-xl font-bold text-gray-900 mb-4">{section.title}</h2>}
-            <div className="prose text-gray-700 leading-relaxed whitespace-pre-line">{section.content}</div>
+            <div className={`${section.image ? 'flex flex-col sm:flex-row gap-6' : ''}`}>
+              <div className={`${section.image ? 'flex-1' : ''} prose text-gray-700 leading-relaxed whitespace-pre-line`}>{section.content}</div>
+              {section.image && (
+                <div className="flex-shrink-0 flex items-start justify-center p-4">
+                  <div className="piece-glow-container">
+                    <img
+                      src={section.image}
+                      alt={section.title || 'Peça de xadrez'}
+                      className="w-32 h-32 sm:w-40 sm:h-40 object-contain rounded-lg piece-image"
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+            {section.imageBelow && (
+              <div className="mt-4 flex justify-center">
+                <img
+                  src={section.imageBelow}
+                  alt={section.title || 'Tabuleiro de xadrez'}
+                  className="w-[60%] rounded-lg board-image"
+                  onClick={() => setFullscreenImage(section.imageBelow || null)}
+                />
+              </div>
+            )}
             {section.video && (
               <div className="mt-4">
                 <button
@@ -187,6 +215,29 @@ function Licao() {
               />
             </div>
           </div>
+        </div>
+      )}
+
+      {fullscreenImage && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-80 p-4 cursor-zoom-out"
+          style={{ animation: 'fade-in 0.2s ease' }}
+          onClick={() => setFullscreenImage(null)}
+        >
+          <button
+            onClick={() => setFullscreenImage(null)}
+            className="absolute top-4 right-4 z-10 bg-white bg-opacity-20 hover:bg-opacity-40 text-white rounded-full w-10 h-10 flex items-center justify-center text-xl transition-colors backdrop-blur-sm"
+            aria-label="Fechar"
+          >
+            ✕
+          </button>
+          <img
+            src={fullscreenImage}
+            alt="Tabuleiro de xadrez"
+            className="max-w-[95vw] max-h-[95vh] object-contain rounded-lg"
+            style={{ animation: 'scale-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)' }}
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
 
