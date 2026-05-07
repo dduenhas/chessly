@@ -68,7 +68,7 @@ function Jogar() {
         if (chess.isGameOver()) {
           setGameOver(true)
           if (chess.isCheckmate()) {
-            setResult(chess.turn() === 'w' ? ptBR.jogar.youWin : ptBR.jogar.computerWins)
+            setResult(chess.turn() === 'w' ? ptBR.jogar.computerWins : ptBR.jogar.youWin)
           } else {
             setResult(ptBR.jogar.draw)
           }

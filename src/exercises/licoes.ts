@@ -11,6 +11,8 @@ export interface LicaoSection {
   content?: string
   fen?: string
   video?: string
+  image?: string
+  imageBelow?: string
   orientation?: 'white' | 'black'
   question?: string
   options?: string[]
@@ -28,36 +30,43 @@ export const licoes: Licao[] = [
         type: 'text',
         title: 'Introdução',
         content: 'O xadrez é jogado em um tabuleiro de 64 casas (8x8). Cada jogador começa com 16 peças: 1 Rei, 1 Dama, 2 Torres, 2 Bispos, 2 Cavalos e 8 Peões. Vamos conhecer cada uma delas!',
+        imageBelow: 'https://mediarepo.vercel.app/api/v/216e8577-6de8-46e1-b4f1-d3f738b45bf0.webp',
       },
       {
         type: 'text',
         title: 'O Rei (♔)',
         content: 'O Rei é a peça mais importante do jogo. Se o seu Rei for capturado, você perde a partida. Por isso, proteger o Rei é essencial. O Rei se move uma casa em qualquer direção: horizontal, vertical ou diagonal. Ele vale o jogo inteiro!',
+        image: 'https://mediarepo.vercel.app/api/v/a1bab3e2-77f2-43da-9934-906d0a6dc743.png',
       },
       {
         type: 'text',
         title: 'A Dama (♕)',
         content: 'A Dama é a peça mais poderosa do tabuleiro. Ela combina os movimentos da Torre e do Bispo: pode se mover quantas casas quiser na horizontal, vertical ou diagonal. A Dama vale 9 pontos.',
+        image: 'https://mediarepo.vercel.app/api/v/a024a288-e00f-4f64-a329-2e5c1c76e6f5.png',
       },
       {
         type: 'text',
         title: 'A Torre (♖)',
         content: 'A Torre se move em linha reta na horizontal ou vertical, quantas casas quiser. Ela é muito forte no final do jogo. Cada Torre vale 5 pontos.',
+        image: 'https://mediarepo.vercel.app/api/v/15bbf430-d825-4682-b6e0-3db794bb9708.png',
       },
       {
         type: 'text',
         title: 'O Bispo (♗)',
         content: 'O Bispo se move nas diagonais, quantas casas quiser. Cada jogador tem um Bispo que anda nas casas claras e outro nas escuras. Cada Bispo vale 3 pontos.',
+        image: 'https://mediarepo.vercel.app/api/v/d9d92117-2ab4-4ce4-a016-a4618c754fb1.png',
       },
       {
         type: 'text',
         title: 'O Cavalo (♘)',
         content: 'O Cavalo tem o movimento mais diferente: ele anda em "L" — duas casas em uma direção e depois uma casa perpendicular. Ele é a única peça que pode pular sobre outras peças. Cada Cavalo vale 3 pontos.',
+        image: 'https://mediarepo.vercel.app/api/v/2143a3ea-1193-4c17-8a26-43b18931df22.png',
       },
       {
         type: 'text',
         title: 'O Peão (♙)',
         content: 'O Peão é a peça mais numerosa mas também a mais fraca. Ele só se move para frente, uma casa por vez (ou duas casas no primeiro movimento). O Peão captura na diagonal. Apesar de valer apenas 1 ponto, os Peões são fundamentais para controlar o centro.',
+        image: 'https://mediarepo.vercel.app/api/v/a45bc07c-f7ef-485f-ab63-fcb264b04fe5.png',
       },
       {
         type: 'quiz',
@@ -86,6 +95,7 @@ export const licoes: Licao[] = [
         type: 'text',
         title: 'O Tabuleiro',
         content: 'O tabuleiro de xadrez tem 64 casas, alternando entre claras e escuras. As colunas são identificadas por letras (a-h) e as linhas por números (1-8). As brancas sempre começam na linha 1 e 2, as pretas na linha 7 e 8.',
+        imageBelow: 'https://mediarepo.vercel.app/api/v/807d4002-2b66-441e-ba4a-12bf152e2d79.webp',
       },
       {
         type: 'text',

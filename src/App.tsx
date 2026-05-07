@@ -5,6 +5,7 @@ import Aprender from './pages/Aprender'
 import Licao from './pages/Aprender/Licao'
 import Jogar from './pages/Jogar'
 import Exercicios from './pages/Exercicios'
+import Sandbox from './pages/Sandbox'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/aprender/:licaoId" element={<Licao />} />
         <Route path="/jogar" element={<Jogar />} />
         <Route path="/exercicios" element={<Exercicios />} />
+        <Route path="/sandbox" element={<Sandbox />} />
       </Route>
     </Routes>
   )

@@ -11,6 +11,9 @@ interface ChessBoardProps {
   movable?: { dests: Map<string, string[]>; color: 'white' | 'black' }
   onMove?: (from: string, to: string) => void
   viewOnly?: boolean
+  freeMove?: boolean
+  onPieceSelect?: (square: string) => void
+  selectableEnabled?: boolean
 }
 
 type Key = string
@@ -33,12 +36,16 @@ function toColor(chess: Chess): 'white' | 'black' {
   return chess.turn() === 'w' ? 'white' : 'black'
 }
 
-function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: ChessBoardProps) {
+function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly, freeMove, onPieceSelect, selectableEnabled }: ChessBoardProps) {
   const boardRef = useRef<HTMLDivElement>(null)
   const chessRef = useRef<Chess>(new Chess())
   const cgRef = useRef<ReturnType<typeof Chessground> | null>(null)
   const onMoveRef = useRef(onMove)
   onMoveRef.current = onMove
+  const onPieceSelectRef = useRef(onPieceSelect)
+  onPieceSelectRef.current = onPieceSelect
+  const fenRef = useRef(fen)
+  fenRef.current = fen
 
   const isExternalControl = !!movable
 
@@ -47,9 +54,20 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
       const cg = cgRef.current
       if (!cg) return
 
+      if (freeMove) {
+        cg.set({
+          fen: fenRef.current || '8/8/8/8/8/8/8/8',
+          selectable: { enabled: selectableEnabled ?? true },
+        })
+        return
+      }
+
+      const turnColor = toColor(chessRef.current)
+
       if (isExternalControl) {
         cg.set({
           fen: chessRef.current.fen(),
+          turnColor,
           movable: viewOnly
             ? { free: false, dests: new Map(), color: movable!.color }
             : {
@@ -66,10 +84,10 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
       } else {
         const chess = chessRef.current
         const dests = viewOnly ? new Map() : toDests(chess)
-        const turnColor = toColor(chess)
 
         cg.set({
           fen: chess.fen(),
+          turnColor,
           movable: viewOnly
             ? { free: false, dests: new Map(), color: turnColor }
             : {
@@ -90,7 +108,7 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
         } as any)
       }
     },
-    [isExternalControl, movable, viewOnly]
+    [isExternalControl, movable, viewOnly, freeMove, selectableEnabled]
   )
 
   useEffect(() => {
@@ -108,8 +126,44 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
 
     const chess = chessRef.current
 
+    if (freeMove) {
+      const initialConfig: any = {
+        fen: fen || '8/8/8/8/8/8/8/8',
+        orientation,
+        coordinates: true,
+        drawable: { enabled: false },
+        selectable: { enabled: selectableEnabled ?? true },
+        movable: {
+          free: true,
+          color: 'both' as any,
+          events: {
+            after: (_from: string, _to: string) => {
+              onMoveRef.current?.(_from, _to)
+            },
+          },
+        },
+      }
+
+      if (onPieceSelect) {
+        initialConfig.events = {
+          select: (key: string) => {
+            onPieceSelectRef.current?.(key)
+          },
+        }
+      }
+
+      cgRef.current = Chessground(boardRef.current, initialConfig)
+
+      return () => {
+        cgRef.current?.destroy()
+      }
+    }
+
+    const turnColor = toColor(chess)
+
     const initialConfig: any = {
       fen: chess.fen(),
+      turnColor,
       orientation,
       viewOnly: viewOnly ?? false,
       coordinates: true,
@@ -131,7 +185,6 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
           }
     } else {
       const dests = viewOnly ? new Map() : toDests(chess)
-      const turnColor = toColor(chess)
       initialConfig.movable = viewOnly
         ? { free: false, dests: new Map(), color: turnColor }
         : {
@@ -160,6 +213,10 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
 
   useEffect(() => {
     if (!cgRef.current) return
+    if (freeMove) {
+      cgRef.current.set({ fen: fen || '8/8/8/8/8/8/8/8' })
+      return
+    }
     if (fen) {
       try {
         chessRef.current.load(fen)
@@ -171,7 +228,7 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly }: C
   useEffect(() => {
     if (!cgRef.current) return
     syncBoard()
-  }, [viewOnly])
+  }, [viewOnly, freeMove, selectableEnabled])
 
   return (
     <div
