@@ -57,7 +57,9 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly, fre
       if (freeMove) {
         cg.set({
           fen: fenRef.current || '8/8/8/8/8/8/8/8',
-          selectable: { enabled: selectableEnabled ?? true },
+          selectable: { enabled: false },
+          highlight: { lastMove: false },
+          lastMove: [] as any,
         })
         return
       }
@@ -132,7 +134,8 @@ function ChessBoard({ fen, orientation = 'white', movable, onMove, viewOnly, fre
         orientation,
         coordinates: true,
         drawable: { enabled: false },
-        selectable: { enabled: selectableEnabled ?? true },
+        highlight: { lastMove: false },
+        selectable: { enabled: false },
         movable: {
           free: true,
           color: 'both' as any,

@@ -30,6 +30,13 @@ function Licao() {
     return () => window.removeEventListener('keydown', handleEsc)
   }, [])
 
+  // Mark lesson as completed as soon as the user reaches the last section
+  useEffect(() => {
+    if (licao && sectionIndex === licao.sections.length - 1) {
+      completeLesson(licao.id, 100)
+    }
+  }, [sectionIndex, licao, completeLesson])
+
   const handleQuizAnswer = useCallback(
     (index: number) => {
       if (quizAnswered) return
@@ -49,10 +56,9 @@ function Licao() {
       setQuizCorrect(false)
       setQuizSelected(null)
     } else {
-      completeLesson(licao.id, 100)
       navigate('/aprender')
     }
-  }, [sectionIndex, licao, navigate, completeLesson])
+  }, [sectionIndex, licao, navigate])
 
   const handlePrev = useCallback(() => {
     if (sectionIndex > 0) {
@@ -103,7 +109,19 @@ function Licao() {
             {section.title && <h2 className="text-xl font-bold text-gray-900 mb-4">{section.title}</h2>}
             <div className={`${section.image ? 'flex flex-col sm:flex-row gap-6' : ''}`}>
               <div className={`${section.image ? 'flex-1' : ''} prose text-gray-700 leading-relaxed whitespace-pre-line`}>{section.content}</div>
-              {section.image && (
+              {section.image && section.imageVariant === 'movement' && (
+                <div className="flex-shrink-0 flex items-start justify-center p-4">
+                  <div className="movement-glow-container">
+                    <img
+                      src={section.image}
+                      alt={section.title || 'Diagrama de movimento'}
+                      className="w-40 h-40 sm:w-52 sm:h-52 object-contain movement-image"
+                      draggable={false}
+                    />
+                  </div>
+                </div>
+              )}
+              {section.image && section.imageVariant !== 'movement' && (
                 <div className="flex-shrink-0 flex items-start justify-center p-4">
                   <div className="piece-glow-container">
                     <img

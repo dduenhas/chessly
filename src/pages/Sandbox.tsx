@@ -156,19 +156,21 @@ function Sandbox() {
   }, [])
 
   useEffect(() => {
+    if (!boardSize) return
     const wrapper = boardWrapperRef.current
     if (!wrapper) return
     let raf1: number, raf2: number
     raf1 = requestAnimationFrame(() => {
       raf2 = requestAnimationFrame(() => {
+        const sqSize = boardSize / BOARD_SIZE
         const pieces = wrapper.querySelectorAll('piece')
         pieces.forEach((el) => {
           const pieceEl = el as HTMLElement
           const transform = pieceEl.style.transform || ''
-          const match = transform.match(/translate\(([\d.]+)%,\s*([\d.]+)%\)/)
+          const match = transform.match(/translate\(([\d.]+)px,\s*([\d.]+)px\)/)
           if (!match) { pieceEl.style.opacity = ''; return }
-          const col = Math.round(parseFloat(match[1]) / 12.5)
-          const row = Math.round(parseFloat(match[2]) / 12.5)
+          const col = Math.round(parseFloat(match[1]) / sqSize)
+          const row = Math.round(parseFloat(match[2]) / sqSize)
           if (col < 0 || col >= 8 || row < 0 || row >= 8) { pieceEl.style.opacity = ''; return }
           const sq = FILES[col] + String(8 - row)
           if (pieceOpacities.has(sq)) {
@@ -182,7 +184,7 @@ function Sandbox() {
       })
     })
     return () => { cancelAnimationFrame(raf1); cancelAnimationFrame(raf2) }
-  }, [fen, pieceOpacities])
+  }, [fen, pieceOpacities, boardSize])
 
   const handleBoardMove = useCallback((from: string, to: string) => {
     setPlacedPieces((prev) => {
@@ -199,12 +201,21 @@ function Sandbox() {
       if (s.to === from) return { ...s, to }
       return s
     }))
+    setPieceOpacities((prev) => {
+      if (!prev.has(from)) return prev
+      const next = new Map(prev)
+      const opacity = next.get(from)!
+      next.delete(from)
+      next.set(to, opacity)
+      return next
+    })
   }, [])
 
   const handlePieceSelect = useCallback((square: string) => {
     if (activeTool !== 'place') return
+    if (!placedPieces.has(square)) return
     setSelectedSquare((prev) => (prev === square ? null : square))
-  }, [activeTool])
+  }, [activeTool, placedPieces])
 
   const moveDestsSquares = useMemo(() => {
     if (!selectedSquare) return []

@@ -12,6 +12,7 @@ export interface LicaoSection {
   fen?: string
   video?: string
   image?: string
+  imageVariant?: 'piece' | 'movement'
   imageBelow?: string
   orientation?: 'white' | 'black'
   question?: string
@@ -101,31 +102,43 @@ export const licoes: Licao[] = [
         type: 'text',
         title: 'Movimento do Peão',
         content: 'O Peão anda uma casa para frente. No seu primeiro movimento, ele pode avançar duas casas. O Peão captura na diagonal (uma casa para frente na diagonal). Se um Peão chegar na última fileira (linha 8 para brancas, linha 1 para pretas), ele é promovido — pode virar Dama, Torre, Bispo ou Cavalo.',
+        image: 'https://mediarepo.vercel.app/api/v/a7011783-20e7-40be-bc3a-5237033c92ad.webp',
+        imageVariant: 'movement',
       },
       {
         type: 'text',
         title: 'Movimento da Torre',
         content: 'A Torre se move em linha reta: para cima, baixo, esquerda ou direita, quantas casas quiser, desde que o caminho esteja livre. Ela não pode pular peças.',
+        image: 'https://mediarepo.vercel.app/api/v/eb5a6366-2d03-42b6-a619-38d203ab5480.webp',
+        imageVariant: 'movement',
       },
       {
         type: 'text',
         title: 'Movimento do Bispo',
         content: 'O Bispo se move nas diagonais, quantas casas quiser. Cada Bispo sempre permanece na mesma cor de casa (um só anda nas brancas, outro só nas pretas).',
+        image: 'https://mediarepo.vercel.app/api/v/0985826e-9fac-470c-a2b4-f23684590bfc.webp',
+        imageVariant: 'movement',
       },
       {
         type: 'text',
         title: 'Movimento da Dama',
         content: 'A Dama combina Torre e Bispo: anda na horizontal, vertical e diagonal, quantas casas quiser. É a peça mais versátil!',
+        image: 'https://mediarepo.vercel.app/api/v/c37b1339-9e12-4d83-b192-a21c058d2659.webp',
+        imageVariant: 'movement',
       },
       {
         type: 'text',
         title: 'Movimento do Rei',
         content: 'O Rei anda uma casa em qualquer direção. Ele não pode se colocar em xeque (posição onde seria capturado). Existe um movimento especial chamado "roque" onde o Rei anda duas casas em direção a uma Torre.',
+        image: 'https://mediarepo.vercel.app/api/v/81601bfa-f32a-4070-932b-af6ef4cbcde5.webp',
+        imageVariant: 'movement',
       },
       {
         type: 'text',
         title: 'Movimento do Cavalo',
         content: 'O Cavalo anda em "L": duas casas em uma direção e uma na perpendicular. Pense em um L: 2+1. O Cavalo é a única peça que pode pular sobre outras peças (suas ou do adversário).',
+        image: 'https://mediarepo.vercel.app/api/v/91fd4011-9120-41be-8e56-38f09126c50e.webp',
+        imageVariant: 'movement',
       },
       {
         type: 'board',
@@ -259,6 +272,23 @@ export const licoes: Licao[] = [
         content: 'Com duas Torres ou Dama e Torre, você pode dar mate "empurrando" o Rei inimigo para a borda do tabuleiro. As peças pesadas controlam fileiras inteiras.',
         fen: '1k6/1R6/8/8/8/8/8/R3K3 w - - 0 1',
         video: 'https://www.youtube.com/embed/t9XhfpFMZ5o',
+      },
+      {
+        type: 'text',
+        title: 'Peças que Dão Xeque-Mate',
+        content: 'Nem toda combinação de peças consegue dar xeque-mate:\n\n• Dama + Rei → sempre conseguem dar mate\n• Torre + Rei → sempre conseguem dar mate\n• Dois Bispos + Rei → conseguem dar mate\n• Bispo + Cavalo + Rei → conseguem dar mate (difícil)\n• Dois Cavalos → NÃO conseguem dar mate forçado em um Rei solitário\n• Peças insuficientes: um Cavalo sozinho ou um Bispo sozinho nunca dão mate',
+      },
+      {
+        type: 'text',
+        title: 'Mate do Louco (2 lances!)',
+        content: 'O xeque-mate mais rápido do xadrez acontece em apenas 2 lances:\n1. f3  e5\n2. g4  Dh4#\n\nAs pretas dão xeque-mate porque as brancas abriram o diagonal da Dama inimiga em direção ao Rei. Moral: nunca mova os Peões "f" e "g" sem necessidade nas primeiras jogadas — isso expõe o Rei!',
+        video: 'https://www.youtube.com/embed/anInrvmCWh4?start=176',
+      },
+      {
+        type: 'text',
+        title: 'Mate do Pastor (4 lances)',
+        content: 'O Mate do Pastor é uma armadilha clássica para iniciantes:\n1. e4  e5\n2. Bc4  Cc6\n3. Dh5  Cf6?? (ERRO!)\n4. Dxf7# Xeque-mate!\n\nAs pretas defenderam o Peão e5 com o Cavalo, mas esqueceram que a Dama em h5 já ameaçava f7, a casa mais fraca do início para as pretas (protegida apenas pelo Rei). Sempre proteja o peão f7/f2!',
+        video: 'https://www.youtube.com/embed/75T7S_5LglU?start=9',
       },
       {
         type: 'quiz',
